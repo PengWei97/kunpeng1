@@ -7,7 +7,6 @@
   ymax = 1000
   elem_type = QUAD4
   uniform_refine = 2
-  skip_partitioning = true
 []
 
 [GlobalParams]
@@ -81,9 +80,6 @@
   [./PolycrystalElasticDrivingForce]
     # adds the elastic driving force for each order parameter
     # ACGrGrElasticDrivingForce
-    # ACGrGrElasticDrivingForce
-    # get：_D_elastic_tensor<--ComputePolycrystalElasticityTensor(need to edit),based on ComputeElasticityTensorCP 
-    # get:_elastic_strain<--ComputeSmallStrain
   [../]
   [./TensorMechanics]
     displacements = 'disp_x disp_y'
@@ -199,30 +195,16 @@
   [../]
   [./ElasticityTensor]
     type = ComputePolycrystalElasticityTensor
-    # length_scale = 1.0e-9
-    # pressure_scale = 1.0e6
     grain_tracker = grain_tracker
-    # outputs = exodus
-    # elasticity_tensor81,dElasticity_Tensor/dgr0
   [../]
   [./strain]
-    # type = ComputeSmallStrain
-    type = ComputeFiniteStrain
-    # type = ComputeFiniteStrain
-    # ComputeSmallStrain,ComputeSmallStrain\ComputeFiniteStrain,ComputeSmallStrain\ComputeIncrementalSmallStrain
+    type = ComputeSmallStrain
     block = 0
     displacements = 'disp_x disp_y'
-    # outputs = exodus
-    # output:elastic_strain11,12,22
   [../]
   [./stress]
-    # type = ComputeLinearElasticStress
-    type = ComputeFiniteStrainElasticStress
-    # ComputeLinearElasticStress computes the stress following linear elasticity theory (small strains)
+    type = ComputeLinearElasticStress
     block = 0
-    # outputs = exodus
-    # output:elastic_strain,mechanical_strain,total_strain
-    # stress,jocabian_mult
   [../]
 []
 
