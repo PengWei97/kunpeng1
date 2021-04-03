@@ -1,0 +1,34 @@
+\documentclass[UTF8]{ctexart}
+\title{bicrystal理解}
+\author{彭威}
+\date{\today}
+\begin{document}
+\maketitle
+\section{Kernels}
+PolycrystalKernel:Set up ACGrGrPoly, ACInterface, TimeDerivative, and ACGBPoly kernels
+\subsection{PolycrystalKernel}
+\subsubsection{ACGrGrPoly}
+\subsubsection{ACInterface}
+\subsubsection{TimeDerivative}
+\subsubsection{ACGBPoly}
+\subsection{PolycrystalElasticDrivingForce}
+\paragraph{Action}
+that addes the elastic driving force for each order parameter. 
+kernel:ACGrGrElasticDrivingForce
+\paragraph{Input}
+\subparagraph{op\_num}
+specifies the number of grains to create. 由GlobalParams模块指定。"op\_num = 2"
+\subparagraph{var\_name\_base}
+specifies the base name of the variables. "var\_name\_base = gr"
+\end{document}
+
+
+
+
+
+% \section{你好中国}
+% \subsection{Hello Beijing}
+% \subsubsection{Hello Dongcheng District}
+% \paragraph{Tian'anmen Square}
+% \subparagraph{Chairman Mao}
+

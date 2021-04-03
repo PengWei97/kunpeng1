@@ -36,43 +36,43 @@
 []
 
 [AuxVariables]
-  [./bnds]
-    order = FIRST
-    family = LAGRANGE
-  [../]
-  [./elastic_strain11]
-    order = CONSTANT
-    family = MONOMIAL
-  [../]
-  [./elastic_strain22]
-    order = CONSTANT
-    family = MONOMIAL
-  [../]
-  [./elastic_strain12]
-    order = CONSTANT
-    family = MONOMIAL
-  [../]
-  [./unique_grains]
-    order = CONSTANT
-    family = MONOMIAL
-  [../]
-  [./var_indices]
-    order = CONSTANT
-    family = MONOMIAL
-  [../]
-  [./C1111]
-    order = CONSTANT
-    family = MONOMIAL
-  [../]
-  [./active_bounds_elemental]
-    # ？？
-    order = CONSTANT
-    family = MONOMIAL
-  [../]
-  [./euler_angle]
-    order = CONSTANT
-    family = MONOMIAL
-  [../]
+  # [./bnds]
+  #   order = FIRST
+  #   family = LAGRANGE
+  # [../]
+  # [./elastic_strain11]
+  #   order = CONSTANT
+  #   family = MONOMIAL
+  # [../]
+  # [./elastic_strain22]
+  #   order = CONSTANT
+  #   family = MONOMIAL
+  # [../]
+  # [./elastic_strain12]
+  #   order = CONSTANT
+  #   family = MONOMIAL
+  # [../]
+  # [./unique_grains]
+  #   order = CONSTANT
+  #   family = MONOMIAL
+  # [../]
+  # [./var_indices]
+  #   order = CONSTANT
+  #   family = MONOMIAL
+  # [../]
+  # [./C1111]
+  #   order = CONSTANT
+  #   family = MONOMIAL
+  # [../]
+  # [./active_bounds_elemental]
+  #   # ？？
+  #   order = CONSTANT
+  #   family = MONOMIAL
+  # [../]
+  # [./euler_angle]
+  #   order = CONSTANT
+  #   family = MONOMIAL
+  # [../]
 []
 
 [Kernels]
@@ -80,10 +80,15 @@
   [../]
   [./PolycrystalElasticDrivingForce]
     # adds the elastic driving force for each order parameter
-    # ACGrGrElasticDrivingForce
-    # ACGrGrElasticDrivingForce
-    # get：_D_elastic_tensor<--ComputePolycrystalElasticityTensor(need to edit),based on ComputeElasticityTensorCP 
     # get:_elastic_strain<--ComputeSmallStrain
+    # Input:op_num = 2,var_name_base = gr
+    # output:D_stiff_name = delasticity_tensor/dgr0
+    # call:ACGrGrElasticDrivingForce
+      # Calculates the porton of the Allen-Cahn equation that results from the deformation energy.
+      # public ACBulk
+      # Input:_D_elastic_tensor,_elastic_strain,_elastic_strain
+        # get：_D_elastic_tensor,_elastic_strain<--ComputePolycrystalElasticityTensor(need to edit),based on ComputeElasticityTensorCP 
+        # get:_elastic_strain<--ComputeSmallStrain
   [../]
   [./TensorMechanics]
     displacements = 'disp_x disp_y'
@@ -91,76 +96,76 @@
 []
 
 [AuxKernels]
-  [./bnds_aux]
-    type = BndsCalcAux
-    variable = bnds
-    execute_on = timestep_end
-  [../]
-  [./elastic_strain11]
-    type = RankTwoAux
-    variable = elastic_strain11
-    rank_two_tensor = elastic_strain
-    index_i = 0
-    index_j = 0
-    execute_on = timestep_end
-  [../]
-  [./elastic_strain22]
-    type = RankTwoAux
-    variable = elastic_strain22
-    rank_two_tensor = elastic_strain
-    index_i = 1
-    index_j = 1
-    execute_on = timestep_end
-  [../]
-  [./elastic_strain12]
-    type = RankTwoAux
-    variable = elastic_strain12
-    rank_two_tensor = elastic_strain
-    index_i = 0
-    index_j = 1
-    execute_on = timestep_end
-  [../]
-  [./unique_grains]
-    type = FeatureFloodCountAux
-    variable = unique_grains
-    flood_counter = grain_tracker
-    execute_on = 'initial timestep_begin'
-    field_display = UNIQUE_REGION
-  [../]
-  [./var_indices]
-    type = FeatureFloodCountAux
-    variable = var_indices
-    flood_counter = grain_tracker
-    execute_on = 'initial timestep_begin'
-    field_display = VARIABLE_COLORING
-  [../]
-  [./C1111]
-    type = RankFourAux
-    variable = C1111
-    rank_four_tensor = elasticity_tensor
-    index_l = 0
-    index_j = 0
-    index_k = 0
-    index_i = 0
-    execute_on = timestep_end
-  [../]
-  [./active_bounds_elemental]
-    type = FeatureFloodCountAux
-    variable = active_bounds_elemental
-    field_display = ACTIVE_BOUNDS
-    execute_on = 'initial timestep_begin'
-    flood_counter = grain_tracker
-  [../]
-  [./euler_angle]
-    type = OutputEulerAngles
-    variable = euler_angle
-    euler_angle_provider = euler_angle_file
-    # Name of Euler angle provider user object
-    grain_tracker = grain_tracker
-    # The GrainTracker UserObject to get values from.
-    output_euler_angle = 'phi1'
-    # "phi1 Phi phi2
-  [../]
+  # [./bnds_aux]
+  #   type = BndsCalcAux
+  #   variable = bnds
+  #   execute_on = timestep_end
+  # [../]
+  # [./elastic_strain11]
+  #   type = RankTwoAux
+  #   variable = elastic_strain11
+  #   rank_two_tensor = elastic_strain
+  #   index_i = 0
+  #   index_j = 0
+  #   execute_on = timestep_end
+  # [../]
+  # [./elastic_strain22]
+  #   type = RankTwoAux
+  #   variable = elastic_strain22
+  #   rank_two_tensor = elastic_strain
+  #   index_i = 1
+  #   index_j = 1
+  #   execute_on = timestep_end
+  # [../]
+  # [./elastic_strain12]
+  #   type = RankTwoAux
+  #   variable = elastic_strain12
+  #   rank_two_tensor = elastic_strain
+  #   index_i = 0
+  #   index_j = 1
+  #   execute_on = timestep_end
+  # [../]
+  # [./unique_grains]
+  #   type = FeatureFloodCountAux
+  #   variable = unique_grains
+  #   flood_counter = grain_tracker
+  #   execute_on = 'initial timestep_begin'
+  #   field_display = UNIQUE_REGION
+  # [../]
+  # [./var_indices]
+  #   type = FeatureFloodCountAux
+  #   variable = var_indices
+  #   flood_counter = grain_tracker
+  #   execute_on = 'initial timestep_begin'
+  #   field_display = VARIABLE_COLORING
+  # [../]
+  # [./C1111]
+  #   type = RankFourAux
+  #   variable = C1111
+  #   rank_four_tensor = elasticity_tensor
+  #   index_l = 0
+  #   index_j = 0
+  #   index_k = 0
+  #   index_i = 0
+  #   execute_on = timestep_end
+  # [../]
+  # [./active_bounds_elemental]
+  #   type = FeatureFloodCountAux
+  #   variable = active_bounds_elemental
+  #   field_display = ACTIVE_BOUNDS
+  #   execute_on = 'initial timestep_begin'
+  #   flood_counter = grain_tracker
+  # [../]
+  # [./euler_angle]
+  #   type = OutputEulerAngles
+  #   variable = euler_angle
+  #   euler_angle_provider = euler_angle_file
+  #   # Name of Euler angle provider user object
+  #   grain_tracker = grain_tracker
+  #   # The GrainTracker UserObject to get values from.
+  #   output_euler_angle = 'phi1'
+  #   # "phi1 Phi phi2
+  # [../]
 []
 
 [BCs]
@@ -195,15 +200,19 @@
     GBenergy = 0.708 #GB energy in J/m^2
     # No need to change material parameters
     time_scale = 1.0e-6 # μs
-    length_scale = 1.0e-9 # nm
+    # length_scale = 1.0e-9 # nm
   [../]
   [./ElasticityTensor]
-    type = ComputePolycrystalElasticityTensor
+    type = ComputePolycrystalElasticityTensorPW
+    # Compute an evolving elasticity tensor coupled to a grain growth phase field model.
+    # public ComputeElasticityTensorBase
     # length_scale = 1.0e-9
     # pressure_scale = 1.0e6
     grain_tracker = grain_tracker
+    # Name of GrainTracker user object that provides RankFourTensors
     # outputs = exodus
-    # elasticity_tensor81,dElasticity_Tensor/dgr0
+    # input：grain_tracker,c_ijkl rotationed
+    # output：elasticity_tensor81,dElasticity_Tensor/dgr0，dElasticity_Tensor/dgr1
   [../]
   [./strain]
     # type = ComputeSmallStrain
@@ -233,17 +242,20 @@
   [../]
   [./grain_tracker]
     type = GrainTrackerElasticity
+    # Manage a list of elasticity tensors for the grains
     connecting_threshold = 0.05
     compute_var_to_feature_map = true
     flood_entity_type = elemental
     execute_on = 'initial timestep_begin'
 
     euler_angle_provider = euler_angle_file
+    # <--UserObjects/euler_angle_file
     fill_method = symmetric9
     C_ijkl = '1.27e5 0.708e5 0.708e5 1.27e5 0.708e5 1.27e5 0.7355e5 0.7355e5 0.7355e5'
+    # output:C_ijkl rotationed for every grain
 
-    outputs = none
-    # outputs = exodus
+    # outputs = none
+    # outputs = exodus # do not output anything
   [../]
 []
 
