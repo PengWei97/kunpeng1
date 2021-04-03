@@ -127,6 +127,7 @@
 [Materials]
   [./crysp]
     type = FiniteStrainCrystalPlasticity
+    # calculate stress
     block = 0
     gtol = 1e-2
     slip_sys_file_name = input_slip_sys.txt
