@@ -7,7 +7,6 @@
   ymax = 1000
   elem_type = QUAD4
   uniform_refine = 2
-  # skip_partitioning = true
 []
 
 [GlobalParams]
@@ -65,7 +64,6 @@
   #   family = MONOMIAL
   # [../]
   # [./active_bounds_elemental]
-  #   # ？？
   #   order = CONSTANT
   #   family = MONOMIAL
   # [../]
@@ -79,18 +77,6 @@
   [./PolycrystalKernel]
   [../]
   [./PolycrystalElasticDrivingForce]
-    # adds the elastic driving force for each order parameter
-    # get:_elastic_strain<--ComputeSmallStrain
-    # Input:op_num = 2,var_name_base = gr
-    # output:D_stiff_name = delasticity_tensor/dgr0
-    # call:ACGrGrElasticDrivingForce
-      # Calculates the porton of the Allen-Cahn equation that results from the deformation energy.
-      # public ACBulk
-      # Input:_D_elastic_tensor,_elastic_strain
-        # get：_D_elastic_tensor <-- ComputePolycrystalElasticityTensor,
-          # D_stiff_name,
-          # delasticity_tensor/dgr0,delasticity_tensor/dgr1
-        # get:_elastic_strain <-- ComputeSmallStrain
   [../]
   [./TensorMechanics]
     displacements = 'disp_x disp_y'
@@ -162,11 +148,8 @@
   #   type = OutputEulerAngles
   #   variable = euler_angle
   #   euler_angle_provider = euler_angle_file
-  #   # Name of Euler angle provider user object
   #   grain_tracker = grain_tracker
-  #   # The GrainTracker UserObject to get values from.
   #   output_euler_angle = 'phi1'
-  #   # "phi1 Phi phi2
   # [../]
 []
 
@@ -200,42 +183,21 @@
     GBmob0 = 2.5e-6 #m^4/(Js) from Schoenfelder 1997
     Q = 0.23 #Migration energy in eV
     GBenergy = 0.708 #GB energy in J/m^2
-    # No need to change material parameters
-    time_scale = 1.0e-6 # μs
-    # length_scale = 1.0e-9 # nm
+    time_scale = 1.0e-6
   [../]
   [./ElasticityTensor]
     type = ComputePolycrystalElasticityTensor
-    # Compute an evolving elasticity tensor coupled to a grain growth phase field model.
-    # public ComputeElasticityTensorBase
-    # length_scale = 1.0e-9
-    # pressure_scale = 1.0e6
     grain_tracker = grain_tracker
-    # Name of GrainTracker user object that provides RankFourTensors
-    # outputs = exodus
-    # input：grain_tracker,c_ijkl rotationed
-    # output：elasticity_tensor_ijkl,dElasticity_Tensor/dgr0_ijkl，dElasticity_Tensor/dgr1_ijkl
+    outputs = exodus
   [../]
   [./strain]
     type = ComputeSmallStrain
-    # Input: grad_tensor 
-    # Output: mechanical_strain_ij,total_strain_ij
-      # _total_strain[_qp] = (grad_tensor + grad_tensor.transpose()) / 2.0;
-      # _mechanical_strain[_qp] = _total_strain[_qp];
-    # type = ComputeFiniteStrain
-    # ComputeSmallStrain,ComputeSmallStrain\ComputeFiniteStrain,ComputeSmallStrain\ComputeIncrementalSmallStrain
     block = 0
-    displacements = 'disp_x disp_y'
-    outputs = exodus
-    # output:elastic_strain11,12,22
+    displacements = 'disp_x disp_y'   
   [../]
   [./stress]
     type = ComputeLinearElasticStress
-      # output:elastic_strain_ij,stress_ij,jocabian_mult_ij(dstress_dstrain)
-    # type = ComputeFiniteStrainElasticStress
-      # ComputeLinearElasticStress computes the stress following linear elasticity theory (small strains)
     block = 0
-    # outputs = exodus
   [../]
 []
 
@@ -246,17 +208,16 @@
   [../]
   [./grain_tracker]
     type = GrainTrackerElasticity
-    # Manage a list of elasticity tensors for the grains
     connecting_threshold = 0.05
     compute_var_to_feature_map = true
     flood_entity_type = elemental
     execute_on = 'initial timestep_begin'
 
     euler_angle_provider = euler_angle_file
-    # <--UserObjects/euler_angle_file
     fill_method = symmetric9
     C_ijkl = '1.27e5 0.708e5 0.708e5 1.27e5 0.708e5 1.27e5 0.7355e5 0.7355e5 0.7355e5'
-    # output:C_ijkl rotationed for every grain
+
+    outputs = none
   [../]
 []
 
@@ -267,11 +228,6 @@
   [./gr0_area]
     type = ElementIntegralVariablePostprocessor
     variable = gr0
-  [../]
-  [./run_time]
-    type = PerfGraphData
-    section_name = "Root"
-    data_type = total
   [../]
 []
 
@@ -310,4 +266,3 @@
   execute_on = 'timestep_end'
   exodus = true
 []
-

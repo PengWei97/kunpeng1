@@ -96,8 +96,8 @@
     # call:ACGrGrElasticDrivingForce
       # Calculates the porton of the Allen-Cahn equation that results from the deformation energy.
       # public ACBulk
-      # Input:_D_elastic_tensor,_elastic_strain,_elastic_strain
-        # get：_D_elastic_tensor,_elastic_strain<--ComputePolycrystalElasticityTensor(need to edit),based on ComputeElasticityTensorCP 
+      # Input:_D_elastic_tensor,_elastic_strain
+        # get：_D_elastic_tensor,
         # get:_elastic_strain<--ComputeSmallStrain
   [../]
   [./TensorMechanics]
@@ -222,7 +222,7 @@
     # Name of GrainTracker user object that provides RankFourTensors
     # outputs = exodus
     # input：grain_tracker,c_ijkl no_rotationed,length_scale,pressure_scale,v
-    # output：elasticity_tensor81,dElasticity_Tensor/dgr0，dElasticity_Tensor/dgr1
+    # output：elasticity_tensor81,dElasticity_Tensor/dgr0_81，dElasticity_Tensor/dgr1_81
   [../]
   [./strain] # ok
     # type = ComputeSmallStrain
