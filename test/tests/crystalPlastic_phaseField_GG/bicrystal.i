@@ -80,17 +80,14 @@
   [../]
   [./PolycrystalElasticDrivingForce]
     # adds the elastic driving force for each order parameter
-    # get:_elastic_strain<--ComputeSmallStrain
     # Input:op_num = 2,var_name_base = gr
-    # output:D_stiff_name = delasticity_tensor/dgr0
+    # output:D_stiff_name = delasticity_tensor/dgr0,delasticity_tensor/dgr1
     # call:ACGrGrElasticDrivingForce
       # Calculates the porton of the Allen-Cahn equation that results from the deformation energy.
       # public ACBulk
       # Input:_D_elastic_tensor,_elastic_strain
         # get：_D_elastic_tensor <-- ComputePolycrystalElasticityTensor,
-          # D_stiff_name,
-          # delasticity_tensor/dgr0,delasticity_tensor/dgr1
-        # get:_elastic_strain <-- ComputeSmallStrain
+        # get:_elastic_strain <-- ComputeLinearElasticStress
   [../]
   [./TensorMechanics]
     displacements = 'disp_x disp_y'
@@ -200,20 +197,19 @@
     GBmob0 = 2.5e-6 #m^4/(Js) from Schoenfelder 1997
     Q = 0.23 #Migration energy in eV
     GBenergy = 0.708 #GB energy in J/m^2
-    # No need to change material parameters
     time_scale = 1.0e-6 # μs
     # length_scale = 1.0e-9 # nm
   [../]
   [./ElasticityTensor]
     type = ComputePolycrystalElasticityTensor
-    # Compute an evolving elasticity tensor coupled to a grain growth phase field model.
-    # public ComputeElasticityTensorBase
+      # Compute an evolving elasticity tensor coupled to a grain growth phase field model.
+      # public ComputeElasticityTensorBase
     # length_scale = 1.0e-9
     # pressure_scale = 1.0e6
     grain_tracker = grain_tracker
-    # Name of GrainTracker user object that provides RankFourTensors
+      # Name of GrainTracker user object that provides RankFourTensors  
     # outputs = exodus
-    # input：grain_tracker,c_ijkl rotationed
+    # input：c_ijkl rotationed <--grain_tracker
     # output：elasticity_tensor_ijkl,dElasticity_Tensor/dgr0_ijkl，dElasticity_Tensor/dgr1_ijkl
   [../]
   [./strain]
@@ -222,20 +218,17 @@
     # Output: mechanical_strain_ij,total_strain_ij
       # _total_strain[_qp] = (grad_tensor + grad_tensor.transpose()) / 2.0;
       # _mechanical_strain[_qp] = _total_strain[_qp];
+
     # type = ComputeFiniteStrain
-    # ComputeSmallStrain,ComputeSmallStrain\ComputeFiniteStrain,ComputeSmallStrain\ComputeIncrementalSmallStrain
     block = 0
     displacements = 'disp_x disp_y'
     outputs = exodus
-    # output:elastic_strain11,12,22
   [../]
   [./stress]
     type = ComputeLinearElasticStress
       # output:elastic_strain_ij,stress_ij,jocabian_mult_ij(dstress_dstrain)
     # type = ComputeFiniteStrainElasticStress
-      # ComputeLinearElasticStress computes the stress following linear elasticity theory (small strains)
     block = 0
-    # outputs = exodus
   [../]
 []
 

@@ -163,13 +163,14 @@
     uo_state_vars = 'state_var_gss'
     uo_state_var_evol_rate_comps = 'state_var_evol_rate_comp_gss'
     # outputs = exodus
-    # Output:Jocabian_mult_81,fp_9,lage_9,pk2_9,stress_9,update_rot_9,disp
+    # Output:Jocabian_mult_ijkl,fp_ij,lage_ij,pk2_ij,stress_ij,update_rot_ij,disp
+    # elatic_energy = 0.5*pk2_ij:lage_ij
   [../]
   [./strain]
     type = ComputeFiniteStrain
     displacements = 'disp_x disp_y'
     # outputs = exodus
-    # Output:deformation_gradient_9,mechanics_strain_9,rotation_increment_9,strain_increment_9,strain_rate_9,total_strain_9
+    # Output:deformation_gradient_ij,mechanics_strain_ij,rotation_increment_ij,strain_increment_ij,strain_rate_ij,total_strain_ij
   [../]
   [./elasticity_tensor]
     type = ComputeElasticityTensorCP
@@ -177,7 +178,7 @@
     fill_method = symmetric9
     read_prop_user_object = prop_read
     # outputs = exodus
-    # Output:crysrot_9(Crystal Rotation Matrix),elasticity_tensor_81,effective_stiffness
+    # Output:crysrot_ij(Crystal Rotation Matrix),elasticity_tensor_ijkl,effective_stiffness
     # Input:euler_angle,C_ijkl no_rotationed
   [../]
 []
