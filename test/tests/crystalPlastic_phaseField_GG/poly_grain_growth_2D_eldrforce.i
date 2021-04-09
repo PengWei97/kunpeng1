@@ -31,16 +31,28 @@
 []
 
 [UserObjects]
+  # 用于开发来执行自定义的算法
+  # 包括复杂的计算，与单元、节点、边界没有一一对应的关系
+  # 是过处理系统的基础
   [./euler_angle_file]
     type = EulerAngleFileReader
+    # 从文件中读取欧拉角
     file_name = grn_36_rand_2D.tex
   [../]
   [./voronoi]
     type = PolycrystalVoronoi
+    # 产生一系列的随机点或者从文件中阅读一系列的随机点来执行vt扫射
+    # 一旦晶粒结构被产生，可以通过着色算法来将序参数赋予给晶粒，来减小序参数的数目
     coloring_algorithm = bt
   [../]
   [./grain_tracker]
     type = GrainTrackerElasticity
+    # 用于减少序参数的数目
+    # graintracker使用FeatureFloodCount从求解域中识别和提取单个晶粒
+    # 一旦FeatureFloodCount确定了所有晶粒，graintracker做两件事情
+      # 将当前时间步上的晶粒与上一个时间步上的晶粒相匹配
+      # 重新映射非常相邻的晶粒
+      # ……
     threshold = 0.2
     compute_var_to_feature_map = true
     execute_on = 'initial timestep_begin'
@@ -54,8 +66,13 @@
 
 [ICs]
   [./PolycrystalICs]
+    # 可以通过多种方法来创建
+      # 通过文件
+      # 由一系列点来vt法扫射所产生
+      # 一些常规的晶体图形
     [./PolycrystalColoringIC]
       polycrystal_ic_uo = voronoi
+      # 通过Objects创建的晶体结构来创建初始晶体结构
     [../]
   [../]
 []

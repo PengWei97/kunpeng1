@@ -18,12 +18,12 @@ class EulerAngleProvider;
 /**
  * Compute an evolving elasticity tensor coupled to a grain growth phase field model.
  */
-class ComputePolycrystalElasticityTensorPW : public ComputeElasticityTensorBase
+class ComputePolycrystalElasticityTensor : public ComputeElasticityTensorBase
 {
 public:
   static InputParameters validParams();
 
-  ComputePolycrystalElasticityTensorPW(const InputParameters & parameters);
+  ComputePolycrystalElasticityTensor(const InputParameters & parameters);
 
 protected:
   virtual void computeQpElasticityTensor();
@@ -33,15 +33,18 @@ protected:
 
   /// Grain tracker object
   const GrainDataTracker<RankFourTensor> & _grain_tracker;
+  // 定义四阶张量
 
   /// Number of order parameters
   const unsigned int _op_num;
 
   /// Order parameters
   const std::vector<const VariableValue *> _vals;
+  // gr0,gr1
 
   /// vector of elasticity tensor material properties
   std::vector<MaterialProperty<RankFourTensor> *> _D_elastic_tensor;
+  // _D_elastic_tensor = dElasticity_Tensor/dgr0_ijkl,dElasticity_Tensor/dgr2_ijkl
 
   /// Conversion factor from J to eV
   const Real _JtoeV;

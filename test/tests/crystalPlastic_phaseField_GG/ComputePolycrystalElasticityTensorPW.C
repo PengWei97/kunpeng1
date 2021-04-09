@@ -7,13 +7,13 @@
 //* Licensed under LGPL 2.1, please see LICENSE for details
 //* https://www.gnu.org/licenses/lgpl-2.1.html
 
-#include "ComputePolycrystalElasticityTensorPW.h"
+#include "ComputePolycrystalElasticityTensor.h"
 #include "RotationTensor.h"
 
-registerMooseObject("PhaseFieldApp", ComputePolycrystalElasticityTensorPW);
+registerMooseObject("PhaseFieldApp", ComputePolycrystalElasticityTensor);
 
 InputParameters
-ComputePolycrystalElasticityTensorPW::validParams()
+ComputePolycrystalElasticityTensor::validParams()
 {
   InputParameters params = ComputeElasticityTensorBase::validParams();
   params.addClassDescription(
@@ -28,11 +28,11 @@ ComputePolycrystalElasticityTensorPW::validParams()
       // This version of the method will build a vector if the given 
       // the base_name and num_name parameters exist in the input file
       // var_name_base = gr op_num = 2
-      // Order parameters.
+      // (gr0,r1)
   return params;
 }
 
-ComputePolycrystalElasticityTensorPW::ComputePolycrystalElasticityTensorPW(
+ComputePolycrystalElasticityTensor::ComputePolycrystalElasticityTensor(
     const InputParameters & parameters)
   : ComputeElasticityTensorBase(parameters),
     _length_scale(getParam<Real>("length_scale")),
@@ -42,6 +42,8 @@ ComputePolycrystalElasticityTensorPW::ComputePolycrystalElasticityTensorPW(
     // coupledComponents:number of components this variable has (usually 1)
     _vals(coupledValues("v")),
     // Vector of VariableValue pointers for each component of var_name
+    _R(_Euler_angles)
+    
     _D_elastic_tensor(_op_num),
     _JtoeV(6.24150974e18)
 {
@@ -56,11 +58,11 @@ ComputePolycrystalElasticityTensorPW::ComputePolycrystalElasticityTensorPW(
 }
 
 void
-ComputePolycrystalElasticityTensorPW::computeQpElasticityTensor()
+ComputePolycrystalElasticityTensor::computeQpElasticityTensor()
 {
   // Get list of active order parameters from grain tracker
   const auto & op_to_grains = _grain_tracker.getVarToFeatureVector(_current_elem->id());
-  // Returns a list of active unique feature ids for a particular element.??
+  // Returns a list of active unique feature ids for a particular element.
   // op_to_grains = 2
 
   // Calculate elasticity tensor
@@ -74,15 +76,22 @@ ComputePolycrystalElasticityTensorPW::computeQpElasticityTensor()
 
     // Interpolation factor for elasticity tensors
     Real h = (1.0 + std::sin(libMesh::pi * ((*_vals[op_index])[_qp] - 0.5))) / 2.0;
+    // if _val = 1, h = 1
+    // if _val = 0.5, h = 0.5
+    // if _val = 0, h = 0
 
     // Sum all rotated elasticity tensors
     _elasticity_tensor[_qp] += _grain_tracker.getData(grain_id) * h;
+    // Used to transition the elastic tensor at the grain boundary
     sum_h += h;
   }
 
   const Real tol = 1.0e-10;
   sum_h = std::max(sum_h, tol);
   _elasticity_tensor[_qp] /= sum_h;
+
+  _R.update(_Euler_angles_mat_prop[_qp]);
+  _crysrot[_qp] = _R.transpose();
 
   // Calculate elasticity tensor derivative: Cderiv = dhdopi/sum_h * (Cop - _Cijkl)
   for (MooseIndex(_op_num) op_index = 0; op_index < _op_num; ++op_index)

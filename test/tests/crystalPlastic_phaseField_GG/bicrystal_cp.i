@@ -253,6 +253,7 @@
   [./grain_tracker]
     type = GrainTrackerElasticity
     # Manage a list of elasticity tensors for the grains
+    # 从自定义对象模块输入初始欧拉角，之后旋转弹性张量并赋予给每个晶粒
     connecting_threshold = 0.05
     compute_var_to_feature_map = true
     flood_entity_type = elemental

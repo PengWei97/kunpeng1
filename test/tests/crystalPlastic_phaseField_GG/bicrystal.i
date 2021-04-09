@@ -32,6 +32,7 @@
       x2 = 500
       y2 = 1000
     [../]
+    # 自定义晶体结构
   [../]
 []
 
@@ -203,10 +204,11 @@
   [./ElasticityTensor]
     type = ComputePolycrystalElasticityTensor
       # Compute an evolving elasticity tensor coupled to a grain growth phase field model.
-      # public ComputeElasticityTensorBase
+      # : public ComputeElasticityTensorBase
     # length_scale = 1.0e-9
     # pressure_scale = 1.0e6
     grain_tracker = grain_tracker
+    # 输入旋转之后的弹性模量
       # Name of GrainTracker user object that provides RankFourTensors  
     # outputs = exodus
     # input：c_ijkl rotationed <--grain_tracker
@@ -235,15 +237,20 @@
 [UserObjects]
   [./euler_angle_file]
     type = EulerAngleFileReader
+    # 
     file_name = test.tex
   [../]
   [./grain_tracker]
     type = GrainTrackerElasticity
+    # 将旋转之后的弹性模量赋予给晶粒
+    # postprocessor
     # Manage a list of elasticity tensors for the grains
     connecting_threshold = 0.05
     compute_var_to_feature_map = true
     flood_entity_type = elemental
     execute_on = 'initial timestep_begin'
+    # control sysm
+      # 基于moose仿真的运行期间修改input参数
 
     euler_angle_provider = euler_angle_file
     # <--UserObjects/euler_angle_file

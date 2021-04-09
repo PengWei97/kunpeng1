@@ -22,6 +22,8 @@
   [./TensorMechanics]
     displacements = 'disp_x disp_y'
     use_displaced_mesh = true
+    # the various stress divergence actions, 
+    # the parameter use_displaced_mesh is used to determine if the deformed or the reference mesh
     # outputs = exodus
     # Output nothing
   [../]
