@@ -256,24 +256,24 @@
     # output:C_ijkl rotationed for every grain
   [../]
   # materials/ComputePolycrystalElasticityTensor
-  # public:ComputeElasticityTensorBase
-  # Output: dElasticity_Tensor/dgr*_ijkl
-  # Output: effective_stiffness 
-  # Output: elasticity_tensor_ijkl
-  # Input: Stiffness matrix after rotation and order parameter gr* 
+    # public:ComputeElasticityTensorBase
+    # Output: dElasticity_Tensor/dgr*_ijkl
+    # Output: effective_stiffness 
+    # Output: elasticity_tensor_ijkl
+    # Input: Stiffness matrix after rotation and order parameter gr* 
 
   # materials/ComputeSmallStrain
-  # public:ComputeStrainBase
-  # Output: mechanical_strain_ij = total_strain_ij
-  # Output: total_strain_ij = (grad_disp + grad_disp^T)/2
-  # Input: grad_disp
+    # public:ComputeStrainBase
+    # Output: mechanical_strain_ij = total_strain_ij
+    # Output: total_strain_ij = (grad_disp + grad_disp^T)/2
+    # Input: grad_disp
 
   # materials/ComputeLinearElasticStress
-  # public:ComputeElasticityTensor
-  # Output: elastic_strain_ij = _mechanical_strain[_qp];
-  # Output: stress_ij; _stress[_qp] = _elasticity_tensor[_qp] * _mechanical_strain[_qp];
-  # Output: jocabian_mult_ijkl(dstress_dstrain) = _elasticity_tensor[_qp]
-  # Input: _elasticity_tensor[_qp],_mechanical_strain[_qp]
+    # public:ComputeElasticityTensor
+    # Output: elastic_strain_ij = _mechanical_strain[_qp];
+    # Output: stress_ij; _stress[_qp] = _elasticity_tensor[_qp] * _mechanical_strain[_qp];
+    # Output: jocabian_mult_ijkl(dstress_dstrain) = _elasticity_tensor[_qp]
+    # Input: _elasticity_tensor[_qp],_mechanical_strain[_qp]
 []
 
 [Postprocessors]

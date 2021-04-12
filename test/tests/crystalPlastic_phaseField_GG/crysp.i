@@ -199,6 +199,35 @@
     displacements = 'ux uy uz'
     # outputs = exodus
   [../]
+
+  # materials/ComputeElasticityTensorCP
+    # public:ComputeElasticityTensor
+    # Output: srysrot_ij = R(Euler1,Euler2,Euler3)
+    # Output: effective_stiffness 
+    # Output: elasticity_tensor_ijkl 
+    # Input: Euler angle and stiffness matrix without rotation
+
+  # materials/ComputeFiniteStrain
+    # public:ComputeIncrementalStrainBase
+    # Output: mechanics_strain_ij 
+    # Output: total_strain_ij 
+    # Output: rotation_increment_ij
+    # Output: strain_increment_ij
+    # Output: strain_rate_ij
+    # Output: deformation_gradient_ij
+    # Input: grad_disp，Calculation of deformation increment
+
+  # materials/FiniteStrainCrystalPlasticity
+    # public:ComputeElasticityTensor
+    # Output: elastic_strain_ij 
+    # Output: stress_ij 
+    # Output: jocabian_mult_ijkl(dstress_dstrain)
+    # Output: acc_slip
+    # Output: lage_ij
+    # Output: fp_ij
+    # Output: pk2_ij
+    # Output: up_rot_ij
+    # Input: From the calculation of elastic tensor module: _elasticity_ tensor，_crysrot
 []
 
 [Postprocessors]
@@ -262,31 +291,4 @@
 
 # If you cancel the all output, the Exodus file will output U (displacement)
 
-# materials/ComputeElasticityTensorCP
-  # public:ComputeElasticityTensor
-  # Output: srysrot_ij = R(Euler1,Euler2,Euler3)
-  # Output: effective_stiffness 
-  # Output: elasticity_tensor_ijkl 
-  # Input: Euler angle and stiffness matrix without rotation
 
-# materials/ComputeFiniteStrain
-  # public:ComputeIncrementalStrainBase
-  # Output: mechanics_strain_ij 
-  # Output: total_strain_ij 
-  # Output: rotation_increment_ij
-  # Output: strain_increment_ij
-  # Output: strain_rate_ij
-  # Output: deformation_gradient_ij
-  # Input: grad_disp，Calculation of deformation increment
-
-# materials/FiniteStrainCrystalPlasticity
-  # public:ComputeElasticityTensor
-  # Output: elastic_strain_ij 
-  # Output: stress_ij 
-  # Output: jocabian_mult_ijkl(dstress_dstrain)
-  # Output: acc_slip
-  # Output: lage_ij
-  # Output: fp_ij
-  # Output: pk2_ij
-  # Output: up_rot_ij
-  # Input: From the calculation of elastic tensor module: _elasticity_ tensor，_crysrot
