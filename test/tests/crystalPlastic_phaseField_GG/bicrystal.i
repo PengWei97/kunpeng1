@@ -32,7 +32,7 @@
       x2 = 500
       y2 = 1000
     [../]
-    # 自定义晶体结构
+    # Custom crystal model
   [../]
 []
 
@@ -85,9 +85,9 @@
     # output:D_stiff_name = delasticity_tensor/dgr0,delasticity_tensor/dgr1
     # call:ACGrGrElasticDrivingForce
       # Calculates the porton of the Allen-Cahn equation that results from the deformation energy.
-      # public ACBulk
+      # public:ACBulk
       # Input:_D_elastic_tensor,_elastic_strain
-        # get：_D_elastic_tensor <-- ComputePolycrystalElasticityTensor,
+        # get: _D_elastic_tensor <-- ComputePolycrystalElasticityTensor,
         # get:_elastic_strain <-- ComputeLinearElasticStress
   [../]
   [./TensorMechanics]
@@ -204,32 +204,31 @@
   [./ElasticityTensor]
     type = ComputePolycrystalElasticityTensor
       # Compute an evolving elasticity tensor coupled to a grain growth phase field model.
-      # : public ComputeElasticityTensorBase
+      # public: ComputeElasticityTensorBase
     # length_scale = 1.0e-9
     # pressure_scale = 1.0e6
     grain_tracker = grain_tracker
-    # 输入旋转之后的弹性模量
+    # Input the elasticity modulus after rotation
       # Name of GrainTracker user object that provides RankFourTensors  
     # outputs = exodus
-    # input：c_ijkl rotationed <--grain_tracker
-    # output：elasticity_tensor_ijkl,dElasticity_Tensor/dgr0_ijkl，dElasticity_Tensor/dgr1_ijkl
+
+    # input: c_ijkl rotationed <--grain_tracker
+    # output: elasticity_tensor_ijkl,dElasticity_Tensor/dgr0_ijkl，dElasticity_Tensor/dgr1_ijkl
   [../]
   [./strain]
-    type = ComputeSmallStrain
+    type = ComputeSmallStrain # ComputeFiniteStrain
     # Input: grad_tensor 
     # Output: mechanical_strain_ij,total_strain_ij
       # _total_strain[_qp] = (grad_tensor + grad_tensor.transpose()) / 2.0;
       # _mechanical_strain[_qp] = _total_strain[_qp];
 
-    # type = ComputeFiniteStrain
     block = 0
     displacements = 'disp_x disp_y'
-    outputs = exodus
+    # outputs = exodus
   [../]
   [./stress]
-    type = ComputeLinearElasticStress
+    type = ComputeLinearElasticStress # ComputeFiniteStrainElasticStress
       # output:elastic_strain_ij,stress_ij,jocabian_mult_ij(dstress_dstrain)
-    # type = ComputeFiniteStrainElasticStress
     block = 0
   [../]
 []
@@ -242,15 +241,13 @@
   [../]
   [./grain_tracker]
     type = GrainTrackerElasticity
-    # 将旋转之后的弹性模量赋予给晶粒
-    # postprocessor
+    # The elastic modulus after rotation is assigned to the grain
+    # postprocessor why ?
     # Manage a list of elasticity tensors for the grains
     connecting_threshold = 0.05
     compute_var_to_feature_map = true
     flood_entity_type = elemental
     execute_on = 'initial timestep_begin'
-    # control sysm
-      # 基于moose仿真的运行期间修改input参数
 
     euler_angle_provider = euler_angle_file
     # <--UserObjects/euler_angle_file
@@ -258,6 +255,25 @@
     C_ijkl = '1.27e5 0.708e5 0.708e5 1.27e5 0.708e5 1.27e5 0.7355e5 0.7355e5 0.7355e5'
     # output:C_ijkl rotationed for every grain
   [../]
+  # materials/ComputePolycrystalElasticityTensor
+  # public:ComputeElasticityTensorBase
+  # Output: dElasticity_Tensor/dgr*_ijkl
+  # Output: effective_stiffness 
+  # Output: elasticity_tensor_ijkl
+  # Input: Stiffness matrix after rotation and order parameter gr* 
+
+  # materials/ComputeSmallStrain
+  # public:ComputeStrainBase
+  # Output: mechanical_strain_ij = total_strain_ij
+  # Output: total_strain_ij = (grad_disp + grad_disp^T)/2
+  # Input: grad_disp
+
+  # materials/ComputeLinearElasticStress
+  # public:ComputeElasticityTensor
+  # Output: elastic_strain_ij = _mechanical_strain[_qp];
+  # Output: stress_ij; _stress[_qp] = _elasticity_tensor[_qp] * _mechanical_strain[_qp];
+  # Output: jocabian_mult_ijkl(dstress_dstrain) = _elasticity_tensor[_qp]
+  # Input: _elasticity_tensor[_qp],_mechanical_strain[_qp]
 []
 
 [Postprocessors]
