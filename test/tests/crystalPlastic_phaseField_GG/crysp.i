@@ -95,7 +95,7 @@
   # [../]
   # [./gss1]
   #   type = MaterialStdVectorAux
-  #   # 通过材料模块提取变量
+  #   # Extracting SDV from material modules
   #   variable = gss1 # Slip system resistances of previous increment
   #   property = gss
   #   index = 0
